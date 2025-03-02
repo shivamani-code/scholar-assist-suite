@@ -10,25 +10,25 @@ const sampleEvents = [
     id: "1",
     title: "Group Study Session",
     date: new Date(new Date().getFullYear(), new Date().getMonth(), 15),
-    type: "event",
+    type: "event" as const,
   },
   {
     id: "2",
     title: "Physics Assignment Due",
     date: new Date(new Date().getFullYear(), new Date().getMonth(), 18),
-    type: "assignment",
+    type: "assignment" as const,
   },
   {
     id: "3",
     title: "Midterm Exam",
     date: new Date(new Date().getFullYear(), new Date().getMonth(), 22),
-    type: "exam",
+    type: "exam" as const,
   },
   {
     id: "4",
     title: "Spring Break",
     date: new Date(new Date().getFullYear(), new Date().getMonth(), 25),
-    type: "holiday",
+    type: "holiday" as const,
   },
 ];
 
