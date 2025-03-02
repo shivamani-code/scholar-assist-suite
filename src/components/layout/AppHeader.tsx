@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { 
@@ -13,7 +12,7 @@ import {
   GraduationCap, 
   Briefcase,
   Users, 
-  Flask,
+  Beaker,  // Replacing Flask with Beaker
   Lightbulb,
   ListTodo,
   BookOpen,
@@ -133,7 +132,7 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Tools",
-    icon: <Flask className="h-5 w-5" />,
+    icon: <Beaker className="h-5 w-5" />,
     path: "/tools",
     subcategories: [
       { name: "Calculator", path: "/calculator" },

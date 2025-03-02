@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/Container";
@@ -15,7 +14,7 @@ import {
   GraduationCap, 
   Briefcase,
   Users, 
-  Flask,
+  Beaker,  // Replacing Flask with Beaker
   Lightbulb
 } from "lucide-react";
 import AppLayout from "@/components/layout/AppLayout";
@@ -138,7 +137,7 @@ const Index = () => {
                 to="/social"
               />
               <FeatureCard
-                icon={<Flask className="h-6 w-6 text-accent" />}
+                icon={<Beaker className="h-6 w-6 text-accent" />}
                 title="Academic Tools"
                 description="Access specialized calculators, equation solvers, and converters."
                 to="/tools"
