@@ -28,7 +28,7 @@ import {
   Share2,
   Settings,
   FileSpreadsheet,
-  PizzaSlice,
+  Apple,  // Replacing PizzaSlice with Apple
   CalendarDays,
   Repeat,
   BookOpen,
@@ -335,7 +335,7 @@ const Index = () => {
   
   const dailyLifeTools = [
     {
-      icon: <PizzaSlice className="h-6 w-6 text-accent" />,
+      icon: <Apple className="h-6 w-6 text-accent" />,  // Changed from PizzaSlice to Apple
       title: "Meal Planner",
       description: "Plan affordable meals and discover budget-friendly recipes.",
       to: "/meal-planner"
