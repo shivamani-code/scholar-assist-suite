@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Container from "@/components/ui/Container";
 import Calendar from "@/components/calendar/Calendar";
-import Navbar from "@/components/layout/Navbar";
+import AppLayout from "@/components/layout/AppLayout";
 
 // Sample events data
 const sampleEvents = [
@@ -40,8 +40,7 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <AppLayout>
       <main className="py-8">
         <Container size="lg">
           <div className="mb-8">
@@ -109,7 +108,7 @@ const CalendarPage = () => {
           </div>
         </Container>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

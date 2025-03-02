@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Container from "@/components/ui/Container";
 import TaskSection, { Task } from "@/components/tasks/TaskSection";
-import Navbar from "@/components/layout/Navbar";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -139,8 +138,7 @@ const TasksPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <AppLayout>
       <main className="py-8">
         <Container>
           <div className="flex items-center justify-between mb-8">
@@ -186,7 +184,7 @@ const TasksPage = () => {
           </div>
         </Container>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

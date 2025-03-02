@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import NotesEditor from "@/components/notes/NotesEditor";
-import Navbar from "@/components/layout/Navbar";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { File, Plus, Folder, Search } from "lucide-react";
 
@@ -67,8 +66,7 @@ const NotesPage = () => {
     : notes;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Navbar />
+    <AppLayout>
       <div className="flex-1 flex flex-col">
         <main className="flex-1 py-8">
           <Container className="h-full">
@@ -151,7 +149,7 @@ const NotesPage = () => {
           </Container>
         </main>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
