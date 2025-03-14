@@ -1,23 +1,7 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { 
-  Calendar, 
-  Book, 
-  CheckCircle, 
-  Clock, 
-  DollarSign, 
-  Calculator,
-  Award, 
-  Heart, 
-  GraduationCap, 
-  Briefcase,
-  Users, 
-  Beaker,  // Replacing Flask with Beaker
-  Lightbulb,
-  ListTodo,
-  BookOpen,
-  User
-} from "lucide-react";
+import { User, ListTodo } from "lucide-react";
 import Container from "@/components/ui/Container";
 import { Button } from "@/components/ui/button";
 import { 
@@ -31,7 +15,6 @@ import {
 
 type CategoryType = {
   name: string;
-  icon: React.ReactNode;
   path: string;
   subcategories?: Array<{
     name: string;
@@ -43,7 +26,6 @@ type CategoryType = {
 export const categories: CategoryType[] = [
   {
     name: "Tasks",
-    icon: <CheckCircle className="h-5 w-5" />,
     path: "/tasks",
     subcategories: [
       { name: "Task Management", path: "/tasks" },
@@ -53,7 +35,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Calendar",
-    icon: <Calendar className="h-5 w-5" />,
     path: "/calendar",
     subcategories: [
       { name: "Events", path: "/calendar" },
@@ -63,7 +44,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Notes",
-    icon: <Book className="h-5 w-5" />,
     path: "/notes",
     subcategories: [
       { name: "Text Notes", path: "/notes" },
@@ -73,7 +53,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Timer",
-    icon: <Clock className="h-5 w-5" />,
     path: "/timer",
     subcategories: [
       { name: "Study Timer", path: "/timer" },
@@ -82,7 +61,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Finance",
-    icon: <DollarSign className="h-5 w-5" />,
     path: "/finance",
     subcategories: [
       { name: "Budget Tracker", path: "/finance" },
@@ -92,7 +70,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Academic",
-    icon: <GraduationCap className="h-5 w-5" />,
     path: "/academic",
     subcategories: [
       { name: "GPA Calculator", path: "/gpa-calculator" },
@@ -102,7 +79,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Wellness",
-    icon: <Heart className="h-5 w-5" />,
     path: "/wellness",
     subcategories: [
       { name: "Health Tracker", path: "/wellness" },
@@ -112,7 +88,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Career",
-    icon: <Briefcase className="h-5 w-5" />,
     path: "/career",
     subcategories: [
       { name: "Job Finder", path: "/career" },
@@ -122,7 +97,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Social",
-    icon: <Users className="h-5 w-5" />,
     path: "/social",
     subcategories: [
       { name: "Group Study", path: "/group-study" },
@@ -132,7 +106,6 @@ export const categories: CategoryType[] = [
   },
   {
     name: "Tools",
-    icon: <Beaker className="h-5 w-5" />,
     path: "/tools",
     subcategories: [
       { name: "Calculator", path: "/calculator" },
@@ -169,8 +142,7 @@ const AppHeader = () => {
                       isActive(item.path) ? "bg-accent text-accent-foreground" : ""
                     )}
                   >
-                    {item.icon}
-                    <span className="ml-2">{item.name}</span>
+                    <span>{item.name}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 {item.subcategories && (
@@ -194,16 +166,14 @@ const AppHeader = () => {
                   size="sm"
                   className="rounded-full px-3"
                 >
-                  <Lightbulb className="h-5 w-5" />
-                  <span className="ml-2">More</span>
+                  <span>More</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {categories.slice(6).map((item) => (
                   <DropdownMenuItem key={item.path} asChild>
                     <Link to={item.path} className="flex items-center">
-                      {item.icon}
-                      <span className="ml-2">{item.name}</span>
+                      <span>{item.name}</span>
                     </Link>
                   </DropdownMenuItem>
                 ))}
@@ -213,7 +183,6 @@ const AppHeader = () => {
 
           <div className="hidden md:flex items-center space-x-2">
             <Button variant="outline" size="sm" className="rounded-full">
-              <User className="h-4 w-4 mr-2" />
               <span className="text-sm">Profile</span>
             </Button>
           </div>
@@ -237,8 +206,7 @@ const AppHeader = () => {
                         isActive(item.path) ? "font-medium text-accent" : ""
                       )}
                     >
-                      {item.icon}
-                      <span className="ml-2">{item.name}</span>
+                      <span>{item.name}</span>
                     </Link>
                   </DropdownMenuItem>
                 ))}
