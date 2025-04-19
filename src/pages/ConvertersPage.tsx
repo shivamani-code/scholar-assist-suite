@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Convert } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const conversionTypes = [
   {
@@ -116,7 +116,10 @@ const ConvertersPage = () => {
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Convert className="h-6 w-6" />
+                <div className="flex items-center">
+                  <ArrowLeft className="h-6 w-6" />
+                  <ArrowRight className="h-6 w-6 -ml-2" />
+                </div>
                 Unit Converter
               </CardTitle>
             </CardHeader>
