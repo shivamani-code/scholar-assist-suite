@@ -1,189 +1,150 @@
-import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
+
+import { useState } from "react";
+import AppLayout from "@/components/layout/AppLayout";
 import Container from "@/components/ui/Container";
 import TaskSection, { Task } from "@/components/tasks/TaskSection";
-import AppLayout from "@/components/layout/AppLayout";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-
-interface TaskSectionData {
-  id: string;
-  title: string;
-  tasks: Task[];
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 const TasksPage = () => {
-  const [sections, setSections] = useState<TaskSectionData[]>([
-    {
-      id: uuidv4(),
-      title: "My Tasks",
-      tasks: [
-        {
-          id: uuidv4(),
-          content: "Complete assignment for CS301",
-          completed: false,
-        },
-        {
-          id: uuidv4(),
-          content: "Study for midterm exam",
-          completed: false,
-        },
-        {
-          id: uuidv4(),
-          content: "Read chapter 5 of textbook",
-          completed: true,
-        },
-      ],
-    },
-    {
-      id: uuidv4(),
-      title: "Projects",
-      tasks: [
-        {
-          id: uuidv4(),
-          content: "Research for final project",
-          completed: false,
-        },
-        {
-          id: uuidv4(),
-          content: "Create presentation slides",
-          completed: false,
-        },
-      ],
-    },
+  const [todoTasks, setTodoTasks] = useState<Task[]>([
+    { id: "1", content: "Complete math homework", completed: false },
+    { id: "2", content: "Read chapter 5 for history class", completed: false },
   ]);
 
-  const [isSectionInputVisible, setSectionInputVisible] = useState(false);
-  const [newSectionTitle, setNewSectionTitle] = useState("");
+  const [inProgressTasks, setInProgressTasks] = useState<Task[]>([
+    { id: "3", content: "Work on science project", completed: false },
+  ]);
 
-  const handleAddTask = (sectionId: string, content: string) => {
-    setSections((prevSections) =>
-      prevSections.map((section) => {
-        if (section.id === sectionId) {
-          return {
-            ...section,
-            tasks: [
-              ...section.tasks,
-              {
-                id: uuidv4(),
-                content,
-                completed: false,
-              },
-            ],
-          };
-        }
-        return section;
-      })
-    );
-  };
+  const [completedTasks, setCompletedTasks] = useState<Task[]>([
+    { id: "4", content: "Submit essay draft", completed: true },
+  ]);
 
-  const handleToggleTask = (sectionId: string, taskId: string) => {
-    setSections((prevSections) =>
-      prevSections.map((section) => {
-        if (section.id === sectionId) {
-          return {
-            ...section,
-            tasks: section.tasks.map((task) => {
-              if (task.id === taskId) {
-                return {
-                  ...task,
-                  completed: !task.completed,
-                };
-              }
-              return task;
-            }),
-          };
-        }
-        return section;
-      })
-    );
-  };
+  const handleAddTask = (section: 'todo' | 'inProgress' | 'completed') => (content: string) => {
+    const newTask: Task = {
+      id: Date.now().toString(),
+      content,
+      completed: section === 'completed'
+    };
 
-  const handleDeleteTask = (sectionId: string, taskId: string) => {
-    setSections((prevSections) =>
-      prevSections.map((section) => {
-        if (section.id === sectionId) {
-          return {
-            ...section,
-            tasks: section.tasks.filter((task) => task.id !== taskId),
-          };
-        }
-        return section;
-      })
-    );
-  };
-
-  const handleAddSection = () => {
-    if (newSectionTitle.trim()) {
-      setSections((prevSections) => [
-        ...prevSections,
-        {
-          id: uuidv4(),
-          title: newSectionTitle,
-          tasks: [],
-        },
-      ]);
-      setNewSectionTitle("");
-      setSectionInputVisible(false);
+    if (section === 'todo') {
+      setTodoTasks([...todoTasks, newTask]);
+    } else if (section === 'inProgress') {
+      setInProgressTasks([...inProgressTasks, newTask]);
+    } else {
+      setCompletedTasks([...completedTasks, newTask]);
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleAddSection();
-    } else if (e.key === "Escape") {
-      setSectionInputVisible(false);
-      setNewSectionTitle("");
+  const handleToggleTask = (section: 'todo' | 'inProgress' | 'completed') => (id: string) => {
+    if (section === 'todo') {
+      const task = todoTasks.find(t => t.id === id);
+      if (task) {
+        setTodoTasks(todoTasks.filter(t => t.id !== id));
+        setCompletedTasks([...completedTasks, { ...task, completed: true }]);
+      }
+    } else if (section === 'inProgress') {
+      const task = inProgressTasks.find(t => t.id === id);
+      if (task) {
+        setInProgressTasks(inProgressTasks.filter(t => t.id !== id));
+        setCompletedTasks([...completedTasks, { ...task, completed: true }]);
+      }
+    } else {
+      const task = completedTasks.find(t => t.id === id);
+      if (task) {
+        setCompletedTasks(completedTasks.filter(t => t.id !== id));
+        setTodoTasks([...todoTasks, { ...task, completed: false }]);
+      }
     }
   };
+
+  const handleDeleteTask = (section: 'todo' | 'inProgress' | 'completed') => (id: string) => {
+    if (section === 'todo') {
+      setTodoTasks(todoTasks.filter(t => t.id !== id));
+    } else if (section === 'inProgress') {
+      setInProgressTasks(inProgressTasks.filter(t => t.id !== id));
+    } else {
+      setCompletedTasks(completedTasks.filter(t => t.id !== id));
+    }
+  };
+
+  const totalTasks = todoTasks.length + inProgressTasks.length + completedTasks.length;
+  const completedCount = completedTasks.length;
+  const progressPercentage = totalTasks > 0 ? (completedCount / totalTasks) * 100 : 0;
 
   return (
     <AppLayout>
-      <main className="py-8">
-        <Container>
-          <div className="flex items-center justify-between mb-8">
+      <div className="py-8">
+        <Container size="lg">
+          <div className="mb-8">
             <h1 className="text-2xl font-bold">Tasks</h1>
-            <Button
-              onClick={() => setSectionInputVisible(true)}
-              className="rounded-full"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Section
-            </Button>
+            <p className="text-muted-foreground">
+              Organize and track your tasks and assignments
+            </p>
           </div>
 
-          {isSectionInputVisible && (
-            <div className="mb-6 p-4 bg-card rounded-xl animate-slide-up card-shadow">
-              <h3 className="text-lg font-medium mb-3">New Section</h3>
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  value={newSectionTitle}
-                  onChange={(e) => setNewSectionTitle(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Section title"
-                  className="flex-1 px-3 py-2 rounded-md bg-background border border-input"
-                  autoFocus
-                />
-                <Button onClick={handleAddSection}>Create</Button>
-              </div>
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
+                <AlertCircle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{totalTasks}</div>
+              </CardContent>
+            </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sections.map((section) => (
-              <TaskSection
-                key={section.id}
-                title={section.title}
-                tasks={section.tasks}
-                onAddTask={(content) => handleAddTask(section.id, content)}
-                onToggleTask={(taskId) => handleToggleTask(section.id, taskId)}
-                onDeleteTask={(taskId) => handleDeleteTask(section.id, taskId)}
-              />
-            ))}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">In Progress</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{todoTasks.length + inProgressTasks.length}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{completedCount}</div>
+                <p className="text-xs text-muted-foreground">
+                  {progressPercentage.toFixed(0)}% completion rate
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <TaskSection
+              title="To Do"
+              tasks={todoTasks}
+              onAddTask={handleAddTask('todo')}
+              onToggleTask={handleToggleTask('todo')}
+              onDeleteTask={handleDeleteTask('todo')}
+            />
+
+            <TaskSection
+              title="In Progress"
+              tasks={inProgressTasks}
+              onAddTask={handleAddTask('inProgress')}
+              onToggleTask={handleToggleTask('inProgress')}
+              onDeleteTask={handleDeleteTask('inProgress')}
+            />
+
+            <TaskSection
+              title="Completed"
+              tasks={completedTasks}
+              onAddTask={handleAddTask('completed')}
+              onToggleTask={handleToggleTask('completed')}
+              onDeleteTask={handleDeleteTask('completed')}
+            />
           </div>
         </Container>
-      </main>
+      </div>
     </AppLayout>
   );
 };

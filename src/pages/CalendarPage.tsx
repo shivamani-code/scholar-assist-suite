@@ -1,113 +1,152 @@
 
 import { useState } from "react";
+import AppLayout from "@/components/layout/AppLayout";
 import Container from "@/components/ui/Container";
 import Calendar from "@/components/calendar/Calendar";
-import AppLayout from "@/components/layout/AppLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Calendar as CalendarIcon } from "lucide-react";
 
-// Sample events data
-const sampleEvents = [
-  {
-    id: "1",
-    title: "Group Study Session",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), 15),
-    type: "event" as const,
-  },
-  {
-    id: "2",
-    title: "Physics Assignment Due",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), 18),
-    type: "assignment" as const,
-  },
-  {
-    id: "3",
-    title: "Midterm Exam",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), 22),
-    type: "exam" as const,
-  },
-  {
-    id: "4",
-    title: "Spring Break",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), 25),
-    type: "holiday" as const,
-  },
-];
+interface Event {
+  id: string;
+  title: string;
+  date: Date;
+  type?: "event" | "assignment" | "exam" | "holiday";
+}
 
 const CalendarPage = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [events, setEvents] = useState<Event[]>([
+    {
+      id: "1",
+      title: "Math Exam",
+      date: new Date(2024, 11, 15),
+      type: "exam"
+    },
+    {
+      id: "2", 
+      title: "Project Due",
+      date: new Date(2024, 11, 20),
+      type: "assignment"
+    }
+  ]);
+  
+  const [newEvent, setNewEvent] = useState({ title: "", date: "", type: "event" });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleDateSelect = (date: Date) => {
-    setSelectedDate(date);
+  const addEvent = () => {
+    if (newEvent.title && newEvent.date) {
+      const event: Event = {
+        id: Date.now().toString(),
+        title: newEvent.title,
+        date: new Date(newEvent.date),
+        type: newEvent.type as Event["type"]
+      };
+      setEvents([...events, event]);
+      setNewEvent({ title: "", date: "", type: "event" });
+      setIsDialogOpen(false);
+    }
   };
 
   return (
     <AppLayout>
-      <main className="py-8">
+      <div className="py-8">
         <Container size="lg">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold">Calendar</h1>
-            <p className="text-muted-foreground">
-              Track your academic schedule, deadlines, and events
-            </p>
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">Calendar</h1>
+              <p className="text-muted-foreground">
+                Manage your schedule and important dates
+              </p>
+            </div>
+            
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Event
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Event</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium">Event Title</label>
+                    <Input
+                      placeholder="Enter event title"
+                      value={newEvent.title}
+                      onChange={(e) => setNewEvent({...newEvent, title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Date</label>
+                    <Input
+                      type="date"
+                      value={newEvent.date}
+                      onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Type</label>
+                    <select 
+                      className="w-full p-2 border rounded-md"
+                      value={newEvent.type}
+                      onChange={(e) => setNewEvent({...newEvent, type: e.target.value})}
+                    >
+                      <option value="event">Event</option>
+                      <option value="assignment">Assignment</option>
+                      <option value="exam">Exam</option>
+                      <option value="holiday">Holiday</option>
+                    </select>
+                  </div>
+                  <Button onClick={addEvent} className="w-full">
+                    Add Event
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <Calendar 
-                events={sampleEvents} 
-                onDateSelect={handleDateSelect} 
-              />
+              <Calendar events={events} />
             </div>
             
-            <div className="space-y-6">
-              <div className="bg-card rounded-xl p-4 card-shadow animate-appear">
-                <h2 className="text-lg font-medium mb-4">Upcoming Events</h2>
-                <div className="space-y-3">
-                  {sampleEvents
-                    .filter(event => new Date(event.date) >= new Date())
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                    .slice(0, 3)
-                    .map(event => (
-                      <div key={event.id} className="flex items-start p-3 bg-secondary/30 rounded-lg">
-                        <div className="flex-1">
-                          <p className="font-medium">{event.title}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {event.date.toLocaleDateString(undefined, { 
-                              weekday: 'short', 
-                              month: 'short', 
-                              day: 'numeric' 
-                            })}
-                          </p>
-                        </div>
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CalendarIcon className="h-5 w-5" />
+                    Upcoming Events
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {events.slice(0, 5).map((event) => (
+                      <div key={event.id} className="p-3 bg-secondary/30 rounded-lg">
+                        <h4 className="font-medium">{event.title}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {event.date.toLocaleDateString()}
+                        </p>
+                        <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                          event.type === 'exam' ? 'bg-red-100 text-red-800' :
+                          event.type === 'assignment' ? 'bg-blue-100 text-blue-800' :
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {event.type}
+                        </span>
                       </div>
                     ))}
-                </div>
-              </div>
-              
-              <div className="bg-card rounded-xl p-4 card-shadow animate-appear">
-                <h2 className="text-lg font-medium mb-4">Event Types</h2>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-                    <span>Events</span>
                   </div>
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                    <span>Assignments</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-                    <span>Exams</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full bg-purple-500 mr-2"></div>
-                    <span>Holidays</span>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </Container>
-      </main>
+      </div>
     </AppLayout>
   );
 };
